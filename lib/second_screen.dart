@@ -15,7 +15,7 @@ class SecondScreen extends StatefulWidget{
 class _SecondScreen extends State<SecondScreen> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    final myController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -40,6 +40,7 @@ class _SecondScreen extends State<SecondScreen> {
             ),
             TextField(
               autofocus: true,
+              controller: myController,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Escriu una task...'
@@ -54,6 +55,8 @@ class _SecondScreen extends State<SecondScreen> {
                 new Expanded(child: FlatButton(
                   onPressed: () {
                     //return to prev window
+                    myController.dispose();
+                    Navigator.pop(context);
                   },
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: Text('Cancelar', style: TextStyle(fontSize: 20.0)),
@@ -61,11 +64,10 @@ class _SecondScreen extends State<SecondScreen> {
                 new Expanded(child: RaisedButton(
                   child: Text('Crear tasca', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                   onPressed: () {
-                    //add task
-                    print("wasabee");
+                    //return to prev window with task text
+                    Navigator.pop(context, myController.text);
                   },
                 ), flex: 3)
-
               ],
             )
           ],

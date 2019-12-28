@@ -10,6 +10,9 @@ class FirstScreen extends StatefulWidget{
 }
 
 class _FirstScreen extends State<FirstScreen>{
+  int numElements = 0;
+  final List<String> taskList = new List();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,50 +24,34 @@ class _FirstScreen extends State<FirstScreen>{
             IconButton(
               icon: const Icon(Icons.add),
                 onPressed: () async {
-                  Map results =
-                  await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context){
-                        return new SecondScreen(
-                       /*   isYesCallback: (){
-                            setState(() {
-
-                            });
-                            return;
-                          },
-
-                        */
-                        );
-                      },
-                      fullscreenDialog: true
-                  ));
-                  if (results != null && results.containsKey('isNoResult') && results['isNoResult']){
-                    setState(() {
-
-                    });
-                  }
+                  var task = await Navigator.push(context, new MaterialPageRoute(
+                      builder: (BuildContext context) => new SecondScreen(),
+                  fullscreenDialog: true,)
+                  );
+                  //add task
+                  taskList.add(task.toString());
+                  numElements++;
                 },
             ),
         ]
       ),
-      body: ListView(
-        children: <Widget>[
-          ListTile(
-            leading: Icon(Icons.map),
-            title: Text('Map'),
-          ),
-          ListTile(
-            leading: Icon(Icons.photo_album),
-            title: Text('Album'),
-          ),
-          ListTile(
-            leading: Icon(Icons.phone),
-            title: Text('Phone'),
-          ),
-        ],
-      ),
+      body: ListView.builder(
+        itemCount: this.numElements,
+        itemBuilder: (context, index){
+          final task = taskList[index];
+          return ListTile(
+            title: Text(
+              task,
+              style: Theme.of(context).textTheme.headline,
+            ),
+          );
+        },
+      )
     );
   }
 
-
+  _buildRow(int index) {
+    return Text("Item " + index.toString());
+  }
 
 }
