@@ -11,7 +11,9 @@ class FirstScreen extends StatefulWidget{
 
 class _FirstScreen extends State<FirstScreen>{
   int numElements = 0;
+  Map listMap = new Map();
   final List<String> taskList = new List();
+  final List<bool> taskComplete = new List();
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +30,12 @@ class _FirstScreen extends State<FirstScreen>{
                       builder: (BuildContext context) => new SecondScreen(),
                   fullscreenDialog: true,)
                   );
-                  //add task
-                  taskList.add(task.toString());
-                  numElements++;
+                  if (task != null){
+                    //add task
+                    taskList.add(task.toString());
+                    taskComplete.add(false);
+                    numElements++;
+                  }
                 },
             ),
         ]
@@ -39,19 +44,87 @@ class _FirstScreen extends State<FirstScreen>{
         itemCount: this.numElements,
         itemBuilder: (context, index){
           final task = taskList[index];
+          final complete = taskComplete[index];
           return ListTile(
+            leading: ConstrainedBox(
+              constraints: setConstraints(complete),
+              child: Image.asset(setImage(complete), fit: BoxFit.cover),
+            ),
             title: Text(
               task,
               style: Theme.of(context).textTheme.headline,
             ),
+            onTap: () => onTapped(index, context),
           );
         },
       )
     );
   }
 
-  _buildRow(int index) {
-    return Text("Item " + index.toString());
+  BoxConstraints setConstraints(bool complete){
+    if(complete) {
+      return BoxConstraints(
+        minWidth: 30,
+        minHeight: 30,
+        maxWidth: 40,
+        maxHeight: 40,
+      );
+    } else {
+      return BoxConstraints(
+      minWidth: 30,
+      minHeight: 30,
+      maxWidth: 35,
+      maxHeight: 35,
+      );
+    }
   }
 
+  String setImage(bool complete) {
+    if(complete) {
+      return "images/checked.png";
+    } else {
+      return "images/unchecked.png";
+    }
+  }
+
+
+  onTapped(int index, BuildContext context) {
+    showDialog(context: context,
+    builder: (BuildContext context){
+      return AlertDialog(
+        title: new Text("Escolleix que vols fer"),
+        actions: <Widget>[
+          new FlatButton(
+            child: new Text("Marca/Desmarca tasca"),
+            onPressed: () {
+              taskComplete.fillRange(index, index + 1, !taskComplete.elementAt(index));
+              setState(() {
+
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+          new FlatButton(
+            child: new Text("Esborra tasca"),
+            onPressed: () {
+              taskList.removeAt(index);
+              taskComplete.removeAt(index);
+              numElements--;
+              setState(() {
+
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+          new FlatButton(
+            child: new Text("Cancel·la"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+    );
+  }
 }

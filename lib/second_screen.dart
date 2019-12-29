@@ -55,7 +55,6 @@ class _SecondScreen extends State<SecondScreen> {
                 new Expanded(child: FlatButton(
                   onPressed: () {
                     //return to prev window
-                    myController.dispose();
                     Navigator.pop(context);
                   },
                   padding: EdgeInsets.symmetric(vertical: 10),
@@ -75,5 +74,4 @@ class _SecondScreen extends State<SecondScreen> {
       ),
     );
   }
-
 }
